@@ -1,4 +1,24 @@
-<?php include("agregarTarea.PHP"); ?>
+<?php
+require_once 'config/database.php';
+require_once 'models/TareaModel.php';
+require_once 'controllers/TareaController.php';
+
+$conn = getConnection();
+$model = new TareaModel($conn);
+
+// Ejecutar acciones
+require_once 'controllers/TareaController.php';
+
+$modoEditar = false;
+if(isset($_GET['editar'])) {
+  $modoEditar = true;
+  $id = $_GET['editar'];
+  $tareaEditar = $model->obtenerPorId($id);
+}
+
+$registros = $model->obtenerTodas();
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
