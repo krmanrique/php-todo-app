@@ -1,7 +1,9 @@
 <?php
 
 try {
-$conn = new PDO('mysql:host=localhost;dbname=aplicacion','root','');
+$conn = new PDO('sqlsrv:server=localhost;Database=aplicacion','','');
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  echo "Conectado a SQLServer";
 } catch (PDOException $e) {
   echo "Error de conexión:" . $e->getMessage();
 }
@@ -18,7 +20,7 @@ if(isset($_POST['id'])) {
 
 if(isset($_POST['agregar_tarea'])) {
   $tarea = ($_POST['tarea']);
-  $sql = 'INSERT INTO tareas (tarea) VALUE(?)';
+  $sql = 'INSERT INTO tareas (tarea) VALUES(?)';
   $sentencia = $conn -> prepare($sql);
   $sentencia -> execute([$tarea]); 
 }
