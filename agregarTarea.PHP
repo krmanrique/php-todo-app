@@ -15,15 +15,30 @@ if(isset($_POST['id'])) {
   $sql = "UPDATE tareas SET completado=? WHERE id=?";
   $sentencia = $conn -> prepare($sql);
   $sentencia -> execute([$completado, $id]);
+  
+  }
 
-}
+  if(isset($_POST['editar_tarea'])) {
+    $tarea = ($_POST['tarea']);
+    $descripcion = ($_POST['descripcion']);
+  
+    $sql = "UPDATE tareas SET tarea=?, descripcion=? WHERE id=?";
+    $sentencia = $conn -> prepare($sql);
+    $sentencia -> execute([$tarea, $descripcion, $id]);
+    header("Location: index.php");
+    exit();
+  }
 
 if(isset($_POST['agregar_tarea'])) {
   $tarea = ($_POST['tarea']);
-  $sql = 'INSERT INTO tareas (tarea) VALUES(?)';
+  $descripcion = ($_POST['descripcion']);
+  $sql = 'INSERT INTO tareas (tarea, descripcion) VALUES(?, ?)';
   $sentencia = $conn -> prepare($sql);
-  $sentencia -> execute([$tarea]); 
+  $sentencia -> execute([$tarea, $descripcion]);
+  header("Location: index.php");
+  exit();
 }
+
 
 if(isset($_GET['id'])) {
   $id = $_GET['id'];

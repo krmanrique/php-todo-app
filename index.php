@@ -35,28 +35,70 @@
       </div>
       <div class="card-body">
 
+
+        <?php
+        $modoEditar = false;
+
+        if(isset($_GET['editar'])){
+          $modoEditar = true;
+
+          $id = $_GET['editar'];
+
+          $sql="SELECT * FROM tareas WHERE id=?";
+          $sentencia = $conn->prepare($sql);
+          $sentencia->execute([$id]);
+          $tareaEditar=$sentencia->fetch(PDO::FETCH_LAZY);
+        }
+        ?>
+
 <!-- escribir tarea -->
 
         <div class="mb-3">
           <form action="" method="post">
+            <input type="hidden" name="id" value="<?php echo $modoEditar ? $tareaEditar['id'] : ''; ?>">
             <label for="tarea" class="form-label">Tarea:</label>
             <input
               type="text"
               class="form-control"
               name="tarea"
+              value="<?php echo $modoEditar ? $tareaEditar['tarea'] : ''; ?>"
               id="tarea"
               aria-describedby="helpId"
               placeholder="Escriba su tarea"
-              
             />
+
             <br/>
+            
+            <label for="descripcion" class="form-label">Descripción:</label>
+            <textarea
+              class="form-control"
+              name="descripcion"
+              placeholder="Escriba la descripción"
+            ><?php echo $modoEditar ? $tareaEditar['descripcion'] : ''; ?></textarea>
+
+            <br/>
+            
+
+            <?php if($modoEditar){ ?>
+
             <input
-              name="agregar_tarea"
-              id="agregar_tarea"
-              class="btn btn-primary"
-              type="submit"
-              value="Agregar tarea"
+            name="editar_tarea"
+            class="btn btn-warning"
+            type="submit"
+            value="Editar tarea"
             />
+
+            <?php } else { ?>
+
+            <input
+            name="agregar_tarea"
+            class="btn btn-primary"
+            type="submit"
+            value="Agregar tarea"
+            />
+
+            <?php } ?>
+
           </form>
         </div>
           
@@ -64,7 +106,7 @@
 
         <?php foreach($registros as $registro) { ?>
           
-        <li class="list-group-item">
+        <li class="list-group-item d-flex">
 
         <form action="" method="post">
           <input type="hidden" name="id" value="<?php echo $registro['id']; ?>">
@@ -84,11 +126,18 @@
           &nbsp; 
           <span 
           class="float-start <?php echo ($registro['completado']==1)?'subrayado':''; ?> "> 
-          &nbsp; <?php echo $registro['tarea']; ?> 
+          &nbsp; <strong><?php echo $registro['tarea']; ?></strong>
+
+          <br>
+
+          <small class="text-muted">
+          &nbsp; <?php echo $registro['descripcion']; ?>
+          </small>
           </span> 
 
           <h6 class="float-start">
             &nbsp; <a href="?id=<?php echo $registro['id']; ?>"><span class="badge bg-danger"> X </span></a>
+            &nbsp; <a href="?editar=<?php echo $registro['id']; ?>"><span class="badge bg-warning"> Editar </span></a>
           </h6>
         </li>
         
